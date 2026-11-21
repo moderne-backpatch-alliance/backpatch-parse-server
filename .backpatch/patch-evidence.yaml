@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 9.8.1-backpatch-00006
+release: 9.8.1-backpatch-00007
 baseline: v9.8.0+backpatch.baseline
 fixes:
   - cve: CVE-2026-47248
@@ -50,12 +50,20 @@ fixes:
     basis: backport
     artifacts:
       - parse-server
-    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: parse-server: Denial of service via exponential-time processing of deeply nested query operators."
+    note: "Carried from 9.8.1-backpatch-00006; upstream's fix in 9.10.0. It closes the advisory: parse-server: Denial of service via exponential-time processing of deeply nested query operators."
+  - cve: CVE-2026-57481
+    upstream_fix_url: https://github.com/parse-community/parse-server/commit/e9c85dfe40a866a55ebae3b6ae56285ac0a22e64
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-57481
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-parse-server/commit/975e597
+    basis: backport
+    artifacts:
+      - parse-server
+    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: parse-server: LiveQuery discloses object data to a subscriber across an ACL read-access change."
 tests:
-  commit: 42cf760e0564a09a878e68969eebfe3616aa7a45
+  commit: 975e597672d2bc39f144566ac648abbd4006354e
   command: npm run build (babel src/ -d lib/ --copy-files --extensions '.ts,.js') with the tag's lockfile installed, npm pack --ignore-scripts, then the tested commit's spec/ with the package's lib/, bin/, public/ and views/ laid over it, jasmine --seed=20261120 on the counter's neighbourhood spec files against MongoDB 8.0.4 standalone (mongodb-runner), each spec recorded into the JUnit report
   runtime: Node.js v22.23.2, npm 10.9.8, jasmine 6.1.0, MongoDB 8.0.4, macOS 27.2 arm64
-  report: parse-server-9.8.1-backpatch-00006-tests.zip
-  report_sha256: 7d5500d16e84708f37ada68ccdcdf19068f9a08be84c06d025b681e66d66a484
+  report: parse-server-9.8.1-backpatch-00007-tests.zip
+  report_sha256: 921e91f36d7f2c90102bd2d280fad682d6954a1e976ca1b2013037356ff7b514
   result: pass
-  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 215 tests, 215 passed, 0 failed, 0 skipped (spec files: spec/RequestComplexity.spec.js spec/ParseLiveQueryServer.spec.js spec/RestQuery.spec.js spec/ParseLiveQuery.spec.js --random=false; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/ParseLiveQueryServer.spec.js spec/RequestComplexity.spec.js), with this release's production lines reverted at the tested commit: 144 tests, 4 passed, 5 failed, 135 skipped; with them: 144 tests, 9 passed, 0 failed, 135 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 239 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/Controllers/FilesController.js, lib/GraphQL/ParseGraphQLServer.js, lib/LiveQuery/ParseLiveQueryServer.js, lib/RestQuery.js, lib/Routers/FilesRouter.js, lib/Routers/UsersRouter.js, lib/Utils.js, lib/batch.js, lib/middlewares.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build."
+  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 49 tests, 49 passed, 0 failed, 0 skipped (spec files: spec/ParseLiveQuery.spec.js --random=false; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/ParseLiveQuery.spec.js), with this release's production lines reverted at the tested commit: 49 tests, 1 passed, 2 failed, 46 skipped; with them: 49 tests, 3 passed, 0 failed, 46 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 239 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/Controllers/FilesController.js, lib/GraphQL/ParseGraphQLServer.js, lib/LiveQuery/ParseLiveQueryServer.js, lib/RestQuery.js, lib/Routers/FilesRouter.js, lib/Routers/UsersRouter.js, lib/Utils.js, lib/batch.js, lib/middlewares.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build."
