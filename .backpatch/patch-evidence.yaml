@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 9.8.1-backpatch-00004
+release: 9.8.1-backpatch-00005
 baseline: v9.8.0+backpatch.baseline
 fixes:
   - cve: CVE-2026-47248
@@ -34,12 +34,20 @@ fixes:
     basis: backport
     artifacts:
       - parse-server
-    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: parse-server: Endpoints `/login` and `/verifyPassword` disclose MFA secrets and protected fields when `_User` get is denied."
+    note: "Carried from 9.8.1-backpatch-00004; upstream's fix in 9.10.0. It closes the advisory: parse-server: Endpoints `/login` and `/verifyPassword` disclose MFA secrets and protected fields when `_User` get is denied."
+  - cve: CVE-2026-55778
+    upstream_fix_url: https://github.com/parse-community/parse-server/commit/be12a60d65b6e140481882037fb896b1f951df50
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-55778
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-parse-server/commit/0567953
+    basis: backport
+    artifacts:
+      - parse-server
+    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: parse-server: Stored XSS via non-standard file extension bypassing file upload extension blocklist."
 tests:
-  commit: 9308c123a20824af162ca0e69221499cf6c5e2c8
+  commit: 05679535a4005a8a30fd2b2581cb48b706b02614
   command: npm run build (babel src/ -d lib/ --copy-files --extensions '.ts,.js') with the tag's lockfile installed, npm pack --ignore-scripts, then the tested commit's spec/ with the package's lib/, bin/, public/ and views/ laid over it, jasmine --seed=20261120 on the counter's neighbourhood spec files against MongoDB 8.0.4 standalone (mongodb-runner), each spec recorded into the JUnit report
   runtime: Node.js v22.23.2, npm 10.9.8, jasmine 6.1.0, MongoDB 8.0.4, macOS 27.2 arm64
-  report: parse-server-9.8.1-backpatch-00004-tests.zip
-  report_sha256: a153abfce1c6b34401a9bc2b50d37d2953a5e9751c22b68424e8d5c77d66e4c3
+  report: parse-server-9.8.1-backpatch-00005-tests.zip
+  report_sha256: 5803a55a43b69d41b31e7344ac187d8e419f145f2d69d350da69277e3b537e97
   result: pass
-  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 656 tests, 631 passed, 0 failed, 25 skipped (spec files: spec/vulnerabilities.spec.js spec/VerifyUserPassword.spec.js spec/ParseUser.spec.js spec/AuthenticationAdaptersV2.spec.js spec/ProtectedFields.spec.js spec/UserPII.spec.js; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/vulnerabilities.spec.js), with this release's production lines reverted at the tested commit: 273 tests, 2 passed, 2 failed, 269 skipped; with them: 273 tests, 4 passed, 0 failed, 269 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 241 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/Controllers/FilesController.js, lib/GraphQL/ParseGraphQLServer.js, lib/Routers/FilesRouter.js, lib/Routers/UsersRouter.js, lib/Utils.js, lib/batch.js, lib/middlewares.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build."
+  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 547 tests, 524 passed, 0 failed, 23 skipped (spec files: spec/vulnerabilities.spec.js spec/Utils.spec.js spec/ParseFile.spec.js spec/FilesController.spec.js spec/FileDownload.spec.js spec/Middlewares.spec.js; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/ParseFile.spec.js spec/Utils.spec.js spec/vulnerabilities.spec.js), with this release's production lines reverted at the tested commit: 482 tests, 19 passed, 2 failed, 461 skipped; with them: 482 tests, 21 passed, 0 failed, 461 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 241 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/Controllers/FilesController.js, lib/GraphQL/ParseGraphQLServer.js, lib/Routers/FilesRouter.js, lib/Routers/UsersRouter.js, lib/Utils.js, lib/batch.js, lib/middlewares.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build."
