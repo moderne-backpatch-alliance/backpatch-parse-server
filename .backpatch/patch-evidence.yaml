@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 9.8.1-backpatch-00008
+release: 9.8.1-backpatch-00009
 baseline: v9.8.0+backpatch.baseline
 fixes:
   - cve: CVE-2026-47248
@@ -66,12 +66,20 @@ fixes:
     basis: backport
     artifacts:
       - parse-server
-    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: Parse Server vulnerable to stored XSS via malformed Content-Type bypassing file upload extension blocklist."
+    note: "Carried from 9.8.1-backpatch-00008; upstream's fix in 9.10.0. It closes the advisory: Parse Server vulnerable to stored XSS via malformed Content-Type bypassing file upload extension blocklist."
+  - cve: CVE-2026-53726
+    upstream_fix_url: https://github.com/parse-community/parse-server/commit/43658f1fd83689b24a4350094f1071ac555ac9b3
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-53726
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-parse-server/commit/b0c76ee
+    basis: backport
+    artifacts:
+      - parse-server
+    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: parse-server: Relation `$relatedTo` query bypasses `protectedFields` and owning-object ACL."
 tests:
-  commit: d07f6ecb598931a6b854bce157527d1a9569b72f
+  commit: b0c76ee59f81a81115cc25712cd9cc05e532695b
   command: npm run build (babel src/ -d lib/ --copy-files --extensions '.ts,.js') with the tag's lockfile installed, npm pack --ignore-scripts, then the tested commit's spec/ with the package's lib/, bin/, public/ and views/ laid over it, jasmine --seed=20261120 on the counter's neighbourhood spec files against MongoDB 8.0.4 standalone (mongodb-runner), each spec recorded into the JUnit report
   runtime: Node.js v22.23.2, npm 10.9.8, jasmine 6.1.0, MongoDB 8.0.4, macOS 27.2 arm64
-  report: parse-server-9.8.1-backpatch-00008-tests.zip
-  report_sha256: c803409752083d8e8b6116ef65a80bc08360383c8b1a38af3acb5bc2b29c4155
+  report: parse-server-9.8.1-backpatch-00009-tests.zip
+  report_sha256: 660f6a6a74063cfed70a0aaeb5b0d684fa2c414d443dcabc6befc7683f9cf53b
   result: pass
-  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 563 tests, 540 passed, 0 failed, 23 skipped (spec files: spec/vulnerabilities.spec.js spec/Utils.spec.js spec/ParseFile.spec.js spec/FilesController.spec.js spec/FileDownload.spec.js spec/Middlewares.spec.js spec/PurchaseValidation.spec.js; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/ParseFile.spec.js spec/PurchaseValidation.spec.js), with this release's production lines reverted at the tested commit: 488 tests, 23 passed, 4 failed, 461 skipped; with them: 488 tests, 27 passed, 0 failed, 461 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 239 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/Controllers/FilesController.js, lib/GraphQL/ParseGraphQLServer.js, lib/LiveQuery/ParseLiveQueryServer.js, lib/RestQuery.js, lib/Routers/FilesRouter.js, lib/Routers/UsersRouter.js, lib/Utils.js, lib/batch.js, lib/middlewares.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build."
+  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 687 tests, 662 passed, 0 failed, 25 skipped (spec files: spec/vulnerabilities.spec.js spec/ParseRelation.spec.js spec/ProtectedFields.spec.js spec/DatabaseController.spec.js spec/ParseACL.spec.js spec/ParseQuery.spec.js; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/vulnerabilities.spec.js), with this release's production lines reverted at the tested commit: 283 tests, 2 passed, 8 failed, 273 skipped; with them: 283 tests, 10 passed, 0 failed, 273 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 238 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/Controllers/DatabaseController.js, lib/Controllers/FilesController.js, lib/GraphQL/ParseGraphQLServer.js, lib/LiveQuery/ParseLiveQueryServer.js, lib/RestQuery.js, lib/Routers/FilesRouter.js, lib/Routers/UsersRouter.js, lib/Utils.js, lib/batch.js, lib/middlewares.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build. The neighbourhood's shared flake 'Parse.Query testing order by createdAt' failed in the verify's neighbourhood run on npmjs 9.8.0 as on this fix's port (1 of 1 run each) and passed 3 of 3 runs alone on both; where it fails here it is recorded as skipped, since npmjs 9.8.0 fails it in the same run."
