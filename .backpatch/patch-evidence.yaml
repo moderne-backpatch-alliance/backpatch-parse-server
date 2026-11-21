@@ -1,0 +1,21 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 9.8.1-backpatch-00001
+baseline: v9.8.0+backpatch.baseline
+fixes:
+  - cve: CVE-2026-47248
+    upstream_fix_url: https://github.com/parse-community/parse-server/commit/155123ade9bc88cdf4807cf267ea1196f9274773
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-47248
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-parse-server/commit/9505a10
+    basis: backport
+    artifacts:
+      - parse-server
+    note: "New in this release; upstream's fix in 9.10.0. It closes the advisory: Parse Server's GraphQL \"Did you mean ...?\" validation suggestions disclose schema to unauthenticated callers."
+tests:
+  commit: 9505a10467a765f52ca13c282e26bbf89c86c36a
+  command: npm run build (babel src/ -d lib/ --copy-files --extensions '.ts,.js') with the tag's lockfile installed, npm pack --ignore-scripts, then the tested commit's spec/ with the package's lib/, bin/, public/ and views/ laid over it, jasmine --seed=20261120 on the counter's neighbourhood spec files against MongoDB 8.0.4 standalone (mongodb-runner), each spec recorded into the JUnit report
+  runtime: Node.js v22.23.2, npm 10.9.8, jasmine 6.1.0, MongoDB 8.0.4, macOS 27.2 arm64
+  report: parse-server-9.8.1-backpatch-00001-tests.zip
+  report_sha256: 31a17fae6461cc0334c6fde561a9e85e19245b745bd8226861dc0d5862670d37
+  result: pass
+  note: "upstream's jasmine specs of this counter's neighbourhood (the spec files around the fix that the verify run chose per CVE, listed below) on the packed package, MongoDB 8.0.4 standalone at the tested commit: 256 tests, 256 passed, 0 failed, 0 skipped (spec files: spec/ParseGraphQLServer.spec.js spec/ParseGraphQLSchema.spec.js spec/GraphQLQueryComplexity.spec.js; a skipped spec includes one npmjs 9.8.0 also failed in the verify's run of these files).. The CVE tests (spec/ParseGraphQLServer.spec.js), with this release's production lines reverted at the tested commit: 221 tests, 3 passed, 2 failed, 216 skipped; with them: 221 tests, 5 passed, 0 failed, 216 skipped. Built with npm run build (babel src -> lib) in a directory named parse-server, 247 of npmjs's 249 files for 9.8.0 are identical; the rest are lib/GraphQL/ParseGraphQLServer.js, package.json. The archive's file-origins.yaml maps each packaged file to the commit, or names its inputs and build."
